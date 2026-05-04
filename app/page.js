@@ -290,7 +290,7 @@ export default function Home() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
           <div>
             <div style={g.logo}>SpesaSmart 🛒</div>
-            <div style={g.tagline}>Carica lo scontrino, risparmia subito</div>
+            <div style={g.tagline}>Risparmia sulla spesa</div>
           </div>
           <div style={{ display: 'flex', gap: 8, marginLeft: 24 }}>
             <button style={{ background: showHistory ? '#f0f0ec' : '#f0f0ec', border: 'none', borderRadius: 10, padding: '0 14px', height: 44, fontSize: 13, fontWeight: 500, color: showHistory ? '#1D9E75' : '#777', cursor: 'pointer', background: showHistory ? '#E1F5EE' : '#f0f0ec' }}
