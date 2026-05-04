@@ -42,12 +42,23 @@ Regole:
     });
 
     const data = await response.json();
+
+    if (!response.ok) {
+      return Response.json({ error: `Anthropic error: ${JSON.stringify(data)}` }, { status: 500 });
+    }
+
     const text = data.content?.map(i => i.text || '').join('') || '';
     const clean = text.replace(/```json|```/g, '').trim();
-    const products = JSON.parse(clean);
+
+    let products;
+    try {
+      products = JSON.parse(clean);
+    } catch(parseErr) {
+      return Response.json({ error: `Parse error: ${text}` }, { status: 500 });
+    }
 
     return Response.json({ products });
   } catch (err) {
-    return Response.json({ error: 'Errore nella lettura dello scontrino' }, { status: 500 });
+    return Response.json({ error: `Exception: ${err.message}` }, { status: 500 });
   }
-}
+  }
