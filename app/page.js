@@ -62,6 +62,7 @@ export default function Home() {
   const [expandedMarket, setExpandedMarket] = useState(null);
   const [history, setHistory] = useState([]);
   const [showHistory, setShowHistory] = useState(false);
+  const [savedList, setSavedList] = useState(null);
   const fileRef = useRef();
 
   useEffect(() => {
@@ -69,7 +70,25 @@ export default function Home() {
     setOnboarded(!!done);
     const h = localStorage.getItem('spesasmart_history');
     if (h) setHistory(JSON.parse(h));
+    const sl = localStorage.getItem('spesasmart_savedlist');
+    if (sl) setSavedList(JSON.parse(sl));
   }, []);
+
+  function saveList() {
+    const sel = products.filter(p => p.checked);
+    if (sel.length === 0) return;
+    const list = sel.map(p => ({ name: p.name, price: p.price }));
+    setSavedList(list);
+    localStorage.setItem('spesasmart_savedlist', JSON.stringify(list));
+    alert(`Lista salvata! ${list.length} prodotti memorizzati.`);
+  }
+
+  function loadSavedList() {
+    if (!savedList) return;
+    setProducts(savedList.map(p => ({ ...p, checked: true })));
+    setStep('products');
+    setShowHistory(false);
+  }
 
   function finishOnboarding() {
     localStorage.setItem('spesasmart_onboarded', '1');
@@ -376,6 +395,11 @@ export default function Home() {
               <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>Carica foto scontrino</div>
               <div style={{ fontSize: 13, color: '#aaa' }}>Tocca per scattare o scegli dalla galleria</div>
             </div>
+            {savedList && (
+              <button style={{ ...g.demoBtn, marginTop: 10, color: '#0F6E56', borderColor: '#1D9E75', fontWeight: 500 }} onClick={loadSavedList}>
+                📋 Usa lista salvata — {savedList.length} prodotti
+              </button>
+            )}
             <button style={g.demoBtn} onClick={loadDemo}>→ Prova con scontrino di esempio</button>
           </div>
         )}
@@ -411,6 +435,9 @@ export default function Home() {
                 ))}
               </div>
               <button style={g.btn} onClick={doCompare}>Confronta prezzi →</button>
+              <button style={{ ...g.demoBtn, marginTop: 10, color: '#0F6E56', borderColor: '#1D9E75' }} onClick={saveList}>
+                📋 Salva come lista ricorrente
+              </button>
             </div>
           </>
         )}
