@@ -288,16 +288,16 @@ export default function Home() {
       <div style={g.inner}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-          <div>
+          <div style={{ flex: 1 }}>
             <div style={g.logo}>SpesaSmart 🛒</div>
-            <div style={g.tagline}>Risparmia sulla spesa</div>
+            <div style={g.tagline}>Carica lo scontrino, risparmia subito</div>
           </div>
-          <div style={{ display: 'flex', gap: 8, marginLeft: 24 }}>
-            <button style={{ background: showHistory ? '#f0f0ec' : '#f0f0ec', border: 'none', borderRadius: 10, padding: '0 14px', height: 44, fontSize: 13, fontWeight: 500, color: showHistory ? '#1D9E75' : '#777', cursor: 'pointer', background: showHistory ? '#E1F5EE' : '#f0f0ec' }}
+          <div style={{ display: 'flex', gap: 8, marginLeft: 24, alignSelf: 'stretch' }}>
+            <button style={{ background: showHistory ? '#E1F5EE' : '#f0f0ec', border: 'none', borderRadius: 10, padding: '0 14px', fontSize: 13, fontWeight: 500, color: showHistory ? '#0F6E56' : '#777', cursor: 'pointer', alignSelf: 'stretch' }}
               onClick={() => { setShowHistory(true); setStep('upload'); setResults(null); }}>
               📊 Storico
             </button>
-            <button style={{ border: 'none', borderRadius: 10, padding: '0 14px', height: 44, fontSize: 13, fontWeight: 500, color: !showHistory ? '#fff' : '#777', cursor: 'pointer', background: !showHistory ? '#1D9E75' : '#f0f0ec' }}
+            <button style={{ border: 'none', borderRadius: 10, padding: '0 14px', fontSize: 13, fontWeight: 500, color: !showHistory ? '#fff' : '#777', cursor: 'pointer', background: !showHistory ? '#1D9E75' : '#f0f0ec', alignSelf: 'stretch' }}
               onClick={() => setShowHistory(false)}>
               🛒 Spesa
             </button>
