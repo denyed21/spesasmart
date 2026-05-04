@@ -57,7 +57,7 @@ export default function Home() {
       setProducts(data.products.map(p => ({ ...p, checked: true })));
       setStep('products');
     } catch (err) {
-      setError('Errore nella lettura. Riprova con una foto più nitida.');
+      setError(err.message || 'Errore nella lettura.');
       setStep('upload');
     }
     setLoading('');
