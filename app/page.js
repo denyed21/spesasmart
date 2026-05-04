@@ -60,11 +60,15 @@ export default function Home() {
   const [error, setError] = useState('');
   const [showProModal, setShowProModal] = useState(false);
   const [expandedMarket, setExpandedMarket] = useState(null);
+  const [history, setHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
   const fileRef = useRef();
 
   useEffect(() => {
     const done = localStorage.getItem('spesasmart_onboarded');
     setOnboarded(!!done);
+    const h = localStorage.getItem('spesasmart_history');
+    if (h) setHistory(JSON.parse(h));
   }, []);
 
   function finishOnboarding() {
@@ -155,6 +159,20 @@ export default function Home() {
     const proTotal = parseFloat(rows.reduce((s, r) => s + r.best.price, 0).toFixed(2));
     const proSaving = parseFloat((currentTotal - proTotal).toFixed(2));
     const extraSaving = parseFloat((proSaving - marketTotals[0].saving).toFixed(2));
+    const entry = {
+      id: Date.now(),
+      date: new Date().toLocaleDateString('it-IT', { day: '2-digit', month: 'short', year: 'numeric' }),
+      products: sel.length,
+      spentTotal: parseFloat(currentTotal.toFixed(2)),
+      bestMarket: marketTotals[0].name,
+      bestTotal: marketTotals[0].total,
+      saving: marketTotals[0].saving,
+    };
+    setHistory(prev => {
+      const updated = [entry, ...prev].slice(0, 50);
+      localStorage.setItem('spesasmart_history', JSON.stringify(updated));
+      return updated;
+    });
     setResults({ rows, currentTotal, markets, marketTotals, proCarts, proTotal, proSaving, extraSaving });
     setExpandedMarket(null);
     setStep('results');
@@ -261,14 +279,95 @@ export default function Home() {
   }
 
   // APP PRINCIPALE
+  const totalSaved = history.reduce((s, h) => s + h.saving, 0);
+  const avgSaving = history.length > 0 ? totalSaved / history.length : 0;
+
   return (
     <div style={g.wrap}>
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       <div style={g.inner}>
-        <div style={g.logo}>SpesaSmart 🛒</div>
-        <div style={g.tagline}>Carica lo scontrino, risparmia subito</div>
+        {/* Header */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
+          <div>
+            <div style={g.logo}>SpesaSmart 🛒</div>
+            <div style={g.tagline}>Carica lo scontrino, risparmia subito</div>
+          </div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button style={{ background: showHistory ? '#1D9E75' : '#f0f0ec', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 500, color: showHistory ? '#fff' : '#777', cursor: 'pointer' }}
+              onClick={() => { setShowHistory(true); setStep('upload'); setResults(null); }}>
+              📊 Storico
+            </button>
+            <button style={{ background: !showHistory ? '#1D9E75' : '#f0f0ec', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 500, color: !showHistory ? '#fff' : '#777', cursor: 'pointer' }}
+              onClick={() => setShowHistory(false)}>
+              🛒 Spesa
+            </button>
+          </div>
+        </div>
 
-        {step === 'upload' && (
+        {/* STORICO */}
+        {showHistory && (
+          <>
+            {history.length === 0 ? (
+              <div style={{ ...g.card, textAlign: 'center', padding: '48px 20px' }}>
+                <div style={{ fontSize: 48, marginBottom: 12 }}>📊</div>
+                <div style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>Nessuna scansione ancora</div>
+                <div style={{ fontSize: 13, color: '#aaa', marginBottom: 24 }}>Carica il tuo primo scontrino per vedere lo storico risparmi</div>
+                <button style={{ ...g.btn, fontSize: 13, padding: '11px', background: 'transparent', border: '1px solid #e0e0d8', color: '#aaa' }} onClick={() => {
+                  const demo = [
+                    { id: 1, date: '28 apr 2026', products: 12, spentTotal: 38.50, bestMarket: 'Eurospin', bestTotal: 31.20, saving: 7.30 },
+                    { id: 2, date: '21 apr 2026', products: 8, spentTotal: 24.80, bestMarket: 'Lidl', bestTotal: 20.10, saving: 4.70 },
+                    { id: 3, date: '14 apr 2026', products: 15, spentTotal: 52.30, bestMarket: 'Eurospin', bestTotal: 43.80, saving: 8.50 },
+                    { id: 4, date: '7 apr 2026', products: 10, spentTotal: 31.60, bestMarket: 'Conad', bestTotal: 27.40, saving: 4.20 },
+                    { id: 5, date: '1 apr 2026', products: 9, spentTotal: 29.90, bestMarket: 'Lidl', bestTotal: 25.50, saving: 4.40 },
+                  ];
+                  setHistory(demo);
+                  localStorage.setItem('spesasmart_history', JSON.stringify(demo));
+                }}>
+                  Carica dati di esempio
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Riepilogo totale */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, marginBottom: 12 }}>
+                  <div style={g.metric}>
+                    <div style={g.mLabel}>Totale risparmiato</div>
+                    <div style={g.mVal(true)}>€{totalSaved.toFixed(2)}</div>
+                  </div>
+                  <div style={g.metric}>
+                    <div style={g.mLabel}>Scansioni</div>
+                    <div style={g.mVal(false)}>{history.length}</div>
+                  </div>
+                  <div style={g.metric}>
+                    <div style={g.mLabel}>Media/spesa</div>
+                    <div style={g.mVal(true)}>€{avgSaving.toFixed(2)}</div>
+                  </div>
+                </div>
+
+                {/* Lista scansioni */}
+                <span style={g.lbl}>Ultime scansioni</span>
+                {history.map((h, i) => (
+                  <div key={h.id} style={g.card}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                      <div style={{ width: 44, height: 44, background: '#E1F5EE', borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20, flexShrink: 0 }}>🧾</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 14, fontWeight: 600 }}>{h.date}</div>
+                        <div style={{ fontSize: 12, color: '#aaa', marginTop: 2 }}>{h.products} prodotti · miglior offerta: {h.bestMarket}</div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: 16, fontWeight: 700, color: '#0F6E56' }}>-€{h.saving.toFixed(2)}</div>
+                        <div style={{ fontSize: 11, color: '#ccc' }}>€{h.spentTotal.toFixed(2)} spesi</div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </>
+            )}
+          </>
+        )}
+
+        {/* UPLOAD */}
+        {!showHistory && step === 'upload' && (
           <div style={g.card}>
             {error && <div style={g.err}>{error}</div>}
             <div style={g.uploadZone} onClick={() => fileRef.current.click()}>
@@ -281,14 +380,14 @@ export default function Home() {
           </div>
         )}
 
-        {step === 'loading' && (
+        {!showHistory && step === 'loading' && (
           <div style={{ ...g.card, textAlign: 'center', padding: '52px 20px' }}>
             <div style={g.spinner} />
             <div style={{ fontSize: 15, color: '#aaa' }}>{loading}</div>
           </div>
         )}
 
-        {step === 'products' && (
+        {!showHistory && step === 'products' && (
           <>
             <button style={g.back} onClick={() => setStep('upload')}>← indietro</button>
             <div style={g.card}>
@@ -316,7 +415,7 @@ export default function Home() {
           </>
         )}
 
-        {step === 'results' && results && (
+        {!showHistory && step === 'results' && results && (
           <>
             <button style={g.back} onClick={() => setStep('products')}>← modifica selezione</button>
             <div style={g.metrics}>
