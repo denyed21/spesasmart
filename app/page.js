@@ -287,22 +287,20 @@ export default function Home() {
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
       <div style={g.inner}>
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 24 }}>
-          <div style={{ minWidth: 0 }}>
-            <div style={g.logo}>SpesaSmart 🛒</div>
-            <div style={g.tagline}>Carica lo scontrino, risparmia subito</div>
-          </div>
-          <div style={{ display: 'flex', gap: 6, flexShrink: 0, marginLeft: 12 }}>
-            <button style={{ background: showHistory ? '#1D9E75' : '#f0f0ec', border: 'none', borderRadius: 10, padding: '8px 12px', fontSize: 12, fontWeight: 500, color: showHistory ? '#fff' : '#777', cursor: 'pointer', whiteSpace: 'nowrap' }}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 6 }}>
+          <div style={g.logo}>SpesaSmart 🛒</div>
+          <div style={{ display: 'flex', gap: 8 }}>
+            <button style={{ background: showHistory ? '#1D9E75' : '#f0f0ec', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 500, color: showHistory ? '#fff' : '#777', cursor: 'pointer' }}
               onClick={() => { setShowHistory(true); setStep('upload'); setResults(null); }}>
               📊 Storico
             </button>
-            <button style={{ background: !showHistory ? '#1D9E75' : '#f0f0ec', border: 'none', borderRadius: 10, padding: '8px 12px', fontSize: 12, fontWeight: 500, color: !showHistory ? '#fff' : '#777', cursor: 'pointer', whiteSpace: 'nowrap' }}
+            <button style={{ background: !showHistory ? '#1D9E75' : '#f0f0ec', border: 'none', borderRadius: 10, padding: '8px 14px', fontSize: 13, fontWeight: 500, color: !showHistory ? '#fff' : '#777', cursor: 'pointer' }}
               onClick={() => setShowHistory(false)}>
               🛒 Spesa
             </button>
           </div>
         </div>
+        <div style={{ ...g.tagline, marginBottom: 20 }}>Carica lo scontrino, risparmia subito</div>
 
         {/* STORICO */}
         {showHistory && (
