@@ -156,7 +156,7 @@ export default function Home() {
   const T = {
     bg: '#FAFAF8',
     card: '#FFFFFF',
-    dark: '#0A0A0A',
+    dark: '#0F6E56',
     green: '#1D9E75',
     greenLight: '#E8F8F2',
     greenDark: '#0F6E56',
