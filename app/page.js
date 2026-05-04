@@ -156,7 +156,8 @@ export default function Home() {
   const T = {
     bg: '#FAFAF8',
     card: '#FFFFFF',
-    dark: '#0F6E56',
+    dark: '#0A0A0A',
+    hero: '#0F6E56',
     green: '#1D9E75',
     greenLight: '#E8F8F2',
     greenDark: '#0F6E56',
@@ -267,7 +268,7 @@ export default function Home() {
               </div>
             ) : (
               <>
-                <div style={{ background: T.dark, borderRadius: 20, padding: '20px', marginBottom: 12 }}>
+                <div style={{ background: T.hero, borderRadius: 20, padding: '20px', marginBottom: 12 }}>
                   <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Totale risparmiato</div>
                   <div style={{ fontSize: 42, fontWeight: 800, color: '#fff', letterSpacing: '-0.03em', lineHeight: 1, marginBottom: 16 }}>€{totalSaved.toFixed(2)}</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 8 }}>
@@ -374,7 +375,7 @@ export default function Home() {
             <button onClick={() => setStep('products')} style={{ background: 'none', border: 'none', color: T.muted, fontSize: 13, cursor: 'pointer', marginBottom: 14, padding: 0 }}>← modifica selezione</button>
 
             {/* Hero dark */}
-            <div style={{ background: T.dark, borderRadius: 20, padding: '22px', marginBottom: 12 }}>
+            <div style={{ background: T.hero, borderRadius: 20, padding: '22px', marginBottom: 12 }}>
               <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: 6 }}>Risparmio possibile</div>
               <div style={{ fontSize: 44, fontWeight: 800, color: '#fff', letterSpacing: '-0.03em', lineHeight: 1, marginBottom: 4 }}>€{results.marketTotals[0].saving.toFixed(2)}</div>
               <div style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', marginBottom: 18 }}>rispetto alla tua spesa attuale</div>
